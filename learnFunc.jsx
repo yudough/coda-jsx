@@ -32,6 +32,8 @@ function exportJPG(jpgOpt) {
 function exportGIF(gifOpt) {
 	gifOpt = new ExportOptionsSaveForWeb();
 	gifOpt.format = SaveDocumentType.GIF;
+	
+	
 }
 
 //スナップショットを作成
