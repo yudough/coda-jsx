@@ -6,8 +6,8 @@ var doc, saveFile, folder, fsName, tmpFileName, saveOpt,resize,width, height,w, 
 doc = app.activeDocument;
 //ダイアログボックスを表示------------------------------------------//
 //キャンバスサイズを取得
-	w = activeDocument.width.value; //横
-	h = activeDocument.height.value; //縦
+	w = activeDocument.width.value; //ドキュメントの横幅
+	h = activeDocument.height.value; //ドキュメンドの縦幅
 	res = activeDocument.resolution; //解像度
 	//ダイアログボックスを表示
 	saveGUI = new Window("dialog", "書き出しオプション", [100,100,100+300,100+200]);
@@ -59,22 +59,25 @@ doc = app.activeDocument;
 			saveGUI.close();
 		} else {
 			width = saveGUI.w.text;
-			alert("widthは" + width);
+			//alert("widthは" + width);
 		}
 		if(saveGUI.h.text == null) {
-			alert("heightの数値を入力してください");
+			//alert("heightの数値を入力してください");
 			saveGUI.close();
 		} else {
 			height = saveGUI.h.text
-			alert("heightは" + height);
+			//alert("heightは" + height);
 		}
-			alert("widhtは" + saveGUI.w.text + "px、heightは" + saveGUI.h.text + "px、種類は" + extType + "で書き出します。" );
+			//alert("widhtは" + saveGUI.w.text + "px、heightは" + saveGUI.h.text + "px、種類は" + extType + "で書き出します。" );
 tmpFileName = splitExt(tmpFileName); //拡張子を抜き取る
 folder = Folder.selectDialog("保存先フォルダの選択してください");
 //セーブオプション----------------------------------------------------
 saveFile = new File(folder.fsName + "/" + tmpFileName[0] + "." + extType); //ファイル名と保存場所の設定
 takeSnapShot(doc);
-doc.resizeImage(UnitValue(width,"px") , UnitValue(height,"px") , res , ResampleMethod.BICUBIC );
+widPer = width / w * 100;
+heiPer = height / h * 100;
+//alert(widPer + "and" + heiPer);
+doc.resizeImage(UnitValue(widPer,"percent") , UnitValue(heiPer,"percent") , res , ResampleMethod.BICUBIC );
 doc.exportDocument(saveFile, ExportType.SAVEFORWEB, saveOpt,resize);
 revertToSnapshot(doc);
 //-----------------------------------------------------------------
@@ -86,6 +89,3 @@ alert(decodeURIComponent(saveFile + "\nに書き出しました"));
 	saveGUI.cancelBtn.onClick = saveGUI.close();
 	saveGUI.show(); //表示する
 //ダイアログボックスを表示------------------------------------------//
-
-
-
