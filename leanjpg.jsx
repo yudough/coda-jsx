@@ -4,7 +4,7 @@ var extType, doc, saveFile, folder, fsName, tmpFileName, saveOpt;
 extType = ".jpg"//拡張子のタイプ
 doc = app.activeDocument;
 tmpFileName = splitExt(tmpFileName); //拡張子を抜き取る
-folder = Folder.selectDialog("保存先フォルダの選択してくだしあ；");
+folder = Folder.selectDialog("保存先フォルダを選択をしてください");
 //セーブオプション----------------------------------------------------
 saveFile = new File(folder.fsName + "/" + tmpFileName[0] + extType); //ファイル名と保存場所の設定
 saveOpt = exportJPG(saveOpt);
