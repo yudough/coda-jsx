@@ -76,3 +76,33 @@ function takeSnapShot() {
 function revertToSnapshot() {
   doc.activeHistoryState = hisObj;
 }
+//キャンバスサイズを取得
+function docInfo(){
+	w = activeDocument.width.value; //ドキュメントの横幅
+	h = activeDocument.height.value; //ドキュメンドの縦幅
+	res = activeDocument.resolution; //解像度
+}
+//ドキュメントの長辺を取得
+function docLongSide(){
+	if(w >= h){longSide = w;}
+	 else if(h >= w) {longSide = h;}
+	 else {
+		 alert("ドキュメントのサイズ情報が正しく取得できませんでした。")
+		 saveGUI.close();
+	 }
+}
+//セーブオプション------------------------------------------//
+function exportFile(doc) {
+	tmpFileName = splitExt(tmpFileName); //拡張子を抜き取る
+	folder = Folder.selectDialog("保存先フォルダの選択してください");
+	saveFile = new File(folder.fsName + "/" + tmpFileName[0] + "." + extType); //ファイル名と保存場所の設定
+	takeSnapShot(doc);
+	exportWidth = width / w * 100;
+	exportWidth = height / h * 100;
+	alert(widPer + "and" + heiPer);
+	doc.resizeImage(UnitValue(exportWidth,unitType), UnitValue(exportWidth,unitType) , res , ResampleMethod.BICUBIC );
+	doc.exportDocument(saveFile, ExportType.SAVEFORWEB, saveOpt,resize);
+	revertToSnapshot(doc);
+	alert(decodeURIComponent(saveFile + "\nに書き出しました"));
+}
+//-------------------------------------------------------//
