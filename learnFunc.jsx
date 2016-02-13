@@ -84,13 +84,23 @@ function docInfo(){
 }
 //ドキュメントの長辺を取得
 function docLongSide(){
-	if(w >= h){longSide = w;}
-	 else if(h >= w) {longSide = h;}
+	if(w >= h){longSide = w; shortSide = h;}
+	 else if(h >= w) {longSide = h; shortSide = w;}
 	 else {
 		 alert("ドキュメントのサイズ情報が正しく取得できませんでした。")
 		 saveGUI.close();
 	 }
+	 alert(longSide +"と"+ shortSide);
 }
+//長さを取得
+/*
+function resizeFix(longSideFix,shortSideFix){
+	longSideFix = longSideNum / longSide;
+	shortSideFix = shortSide * aspB;
+	alert(shortSideFix +"と"+ shortSideFix);
+	return longSideFix,shortSideFix;
+}
+*/
 //セーブオプション------------------------------------------//
 function exportFile(doc) {
 	tmpFileName = splitExt(tmpFileName); //拡張子を抜き取る

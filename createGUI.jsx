@@ -12,7 +12,7 @@
 
 preferences.rulerUnits = Units.PIXELS;// 単位を px に変更
 doc = app.activeDocument;
-var doc, saveFile, folder, fsName, tmpFileName, saveOpt,resize,width, height,w, h, res, saveGUI, extType, w, h, res, saveGUI, longSide, unitType,exportWidth, exportHieght;
+var doc, saveFile, folder, fsName, tmpFileName, saveOpt,resize,width, height,w, h, res, saveGUI, extType, w, h, res, saveGUI, longSide, unitType,exportWidth, exportHieght,shortSide,longSideFix,shortSideFix;
 #include "learnFunc.jsx" //ファンクションのロード
 doc = app.activeDocument;
 //ダイアログボックスを作成------------------------------------------//
@@ -64,7 +64,13 @@ doc = app.activeDocument;
 			unitType = "percent";
 		}
 			//サイズの算出
-		
+		function resizeFix(longSide,shortSide){
+			longSide = longSideNum / longSide;
+			alert(longSide);
+			shortSide = shortSide * aspB;
+			alert(shortSide);
+		}
+		alert(longSide +"と"+ shortSide);
 		
 		
 	 
