@@ -1,7 +1,5 @@
-uDlg = new Window('dialog','サンプル',[200,100,580,245]);
+uDlg = new Window('dialog','サンプル',[100,100,505,220]);
+uDlg.pBar = uDlg.add("progressbar",[10,30,10+384,30+15], 0, 100);
 uDlg.okBtn = uDlg.add("button",[130,80,225,80+25], "OK!", { name:"ok"});
-uDlg.cBox1 = uDlg.add("checkbox",[100,10,275,10+25], "JPEG形式でも保存する");
-uDlg.cBox2 = uDlg.add("checkbox",[100,30,275,30+25], "GIF形式でも保存する");
+uDlg.pBar.value = 10;
 uDlg.show();
-alert("CheckBox 1 : "+uDlg.cBox1.value);
-alert("CheckBox 2 : "+uDlg.cBox2.value);

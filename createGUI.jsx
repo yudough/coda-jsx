@@ -12,7 +12,7 @@
 
 preferences.rulerUnits = Units.PIXELS;// 単位を px に変更
 doc = app.activeDocument;
-var doc, saveFile, folder, fsName, tmpFileName, saveOpt,resize,width, height,w, h, res, saveGUI, extType, w, h, res, saveGUI, longSide, unitType,exportWidth, exportHieght,shortSide,longSideFix,shortSideFix;
+var doc, saveFile, folder, fsName, tmpFileName, saveOpt,w, h, res, saveGUI, extType, extTypePNG, extTypeJPG, w, h, res, saveGUI, longSide, unitType, exportDoc, shortSide, longSideNum, exportLongSide,exportShortSide,resizeLong,resizeShort;
 #include "learnFunc.jsx" //ファンクションのロード
 doc = app.activeDocument;
 //ダイアログボックスを作成------------------------------------------//
@@ -55,36 +55,50 @@ doc = app.activeDocument;
 			alert( '長辺のサイズが正しく入力されていません' );
 	    return false;
 	    }
-			//単位の判断
+			//単位の判断、サイズの算出(px指定の場合)
 		var unitPixel = saveGUI.rBtn1.value;
 		var unitPercent = saveGUI.rBtn2.value;
 		if(!unitPercent) {
 			unitType = "px"; 
+			//長辺(longSideNum) / ドキュメントのサイズ(longSide)/100 = 比率
+			exportDoc = resizeFix(resizeLong);
+			//alert("比率は"+ exportDoc);
 		}else{
 			unitType = "percent";
+			exportDoc = longSideNum;
 		}
-			//サイズの算出
-		function resizeFix(longSide,shortSide){
-			longSide = longSideNum / longSide;
-			alert(longSide);
-			shortSide = shortSide * aspB;
-			alert(shortSide);
+
+			//拡張子の判断
+		extTypePNG = saveGUI.cBox1.value;
+		extTypeJPG = saveGUI.cBox2.value;
+		if(!extTypePNG && !extTypeJPG) {
+			alert("拡張子が選択されておりません。どれか一つ以上チェックを入れて下さい。");
+			return false;
 		}
-		alert(longSide +"と"+ shortSide);
 		
+		saveOption(doc); //書き出し先を指定
 		
-	 
-		exportFile(doc); //書き出し処理
+			//拡張子別に書き出し
+		if(extTypePNG == true) {
+			extType = "png";
+			saveOpt = exportPNG24();
+			//alert("PNGで書き出します");
+			saveToFile(doc);
+
+		}
+		if(extTypeJPG == true) {
+			extType = "jpg";
+			saveOpt = exportJPG();
+			//alert("JPGで書き出します");
+			saveToFile(doc);
+		}
+		alert(decodeURIComponent(folder.fsName + "\nの中に書き出しました"));
+		revertToSnapshot(doc);
+	//ダイアログボックスを閉じる
+		saveGUI.close();
+
 	}
 //キャンセル処理
 	saveGUI.cancelBtn.onClick = saveGUI.close();
 //ダイアログボックスを表示する
 	saveGUI.show();
-//ダイアログボックスを閉じる
-	saveGUI.close();
-
-
-				
-			
-		
-	
