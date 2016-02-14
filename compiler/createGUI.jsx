@@ -100,3 +100,46 @@ doc = app.activeDocument;
 //-----------------------------------------------------------------------
 
 
+ //ドキュメントを複製して戻るまで
+function copyDoc(){
+	//ドキュメントを複製
+	var idMk = charIDToTypeID( "Mk  " );
+    var desc = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+        var ref = new ActionReference();
+        var idDcmn = charIDToTypeID( "Dcmn" );
+        ref.putClass( idDcmn );
+    desc.putReference( idnull, ref );
+    var idNm = charIDToTypeID( "Nm  " );
+    desc.putString( idNm, activeDocument.name.slice(0, -4) + '.copy.psd' );
+    var idUsng = charIDToTypeID( "Usng" );
+        var ref1 = new ActionReference();
+        var idLyr = charIDToTypeID( "Lyr " );
+        var idOrdn = charIDToTypeID( "Ordn" );
+        var idTrgt = charIDToTypeID( "Trgt" );
+        ref1.putEnumerated( idLyr, idOrdn, idTrgt );
+    desc.putReference( idUsng, ref1 );
+    var idVrsn = charIDToTypeID( "Vrsn" );
+    desc.putInteger( idVrsn, 5 );
+executeAction( idMk, desc, DialogModes.NO );
+
+	var copyDoc;
+	copyDoc = app.activeDocument;
+	var copyDocHisObj = copyDoc.activeHistoryState;
+	saveFile = new File(folder.fsName + "/" + tmpFileName[0] + "." + extType); //ファイル名と保存場所の設定
+		//拡張子別に書き出し
+		if(extTypePNG == true) {
+			extType = "png";
+			saveOpt = exportPNG24(saveOpt);
+			alert("PNGで書き出します");
+			saveToFile(copyDoc);
+		}
+		if(extTypeJPG == true) {
+			extType = "jpg";
+			saveOpt = exportJPG(saveOpt);
+			alert("JPGで書き出します");
+			saveToFile(copyDoc);
+		}
+	copyDoc.activeHistoryState = copyDocHisObj;
+	return copyDoc.close(SaveOptions.DONOTSAVECHANGES);
+}
