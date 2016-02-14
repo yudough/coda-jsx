@@ -10,11 +10,12 @@
 
 //初期化設定
 
-preferences.rulerUnits = Units.PIXELS;// 単位を px に変更
+
+#include "lib/lib.jsx"; //ファンクションのロード
+preferences.IrulerUnits = Units.PIXELS;// 単位を px に変更
+var doc, saveFile, folder, fsName, tmpFileName, saveOpt,w, h, res, saveGUI, extType, extTypePNG, extTypeJPG, w, h, res, saveGUI, longSide, unitType, exportDoc, shortSide, longSideNum, exportLongSide,exportShortSide,resizeLong,resizeShort,layObj;
 doc = app.activeDocument;
-var doc, saveFile, folder, fsName, tmpFileName, saveOpt,w, h, res, saveGUI, extType, extTypePNG, extTypeJPG, w, h, res, saveGUI, longSide, unitType, exportDoc, shortSide, longSideNum, exportLongSide,exportShortSide,resizeLong,resizeShort;
-#include "learnFunc.jsx" //ファンクションのロード
-doc = app.activeDocument;
+
 //ダイアログボックスを作成------------------------------------------//
 	//キャンバスサイズを取得
 	docInfo();
@@ -80,6 +81,8 @@ doc = app.activeDocument;
 		folder = Folder.selectDialog("保存先フォルダの選択してください");
 		//スナップショットを作成
 		takeSnapShot(doc); //スナップショット
+		layObj = doc.artLayers.add(); //レイヤーを新規作成
+		doc.activeLayer.name = "MergeLayers"; //レイヤー名を変更
 		doc.mergeVisibleLayers(); //画像を統合する
 		copyDoc();
 		//先ほどのドキュメントをアクティブにする
@@ -94,8 +97,8 @@ doc = app.activeDocument;
 //ダイアログボックスを表示する
 	saveGUI.show();
 	
-	
-	
+
+
 	
 //-----------------------------------------------------------------------
 

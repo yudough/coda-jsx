@@ -13,7 +13,7 @@
 preferences.rulerUnits = Units.PIXELS;// 単位を px に変更
 doc = app.activeDocument;
 var doc, saveFile, folder, fsName, tmpFileName, saveOpt,w, h, res, saveGUI, extType, extTypePNG, extTypeJPG, w, h, res, saveGUI, longSide, unitType, exportDoc, shortSide, longSideNum, exportLongSide,exportShortSide,resizeLong,resizeShort;
-#include "learnFunc.jsx" //ファンクションのロード
+var fileName, pngOpt, jpgOpt, gifOpt, hisObj,layObj;
 doc = app.activeDocument;
 //ダイアログボックスを作成------------------------------------------//
 	//キャンバスサイズを取得
@@ -80,6 +80,8 @@ doc = app.activeDocument;
 		folder = Folder.selectDialog("保存先フォルダの選択してください");
 		//スナップショットを作成
 		takeSnapShot(doc); //スナップショット
+		layObj = doc.artLayers.add(); //レイヤーを新規作成
+		doc.activeLayer.name = "MergeLayers"; //レイヤー名を変更
 		doc.mergeVisibleLayers(); //画像を統合する
 		copyDoc();
 		//先ほどのドキュメントをアクティブにする
@@ -131,15 +133,95 @@ executeAction( idMk, desc, DialogModes.NO );
 		if(extTypePNG == true) {
 			extType = "png";
 			saveOpt = exportPNG24(saveOpt);
-			alert("PNGで書き出します");
+			//alert("PNGで書き出します");
 			saveToFile(copyDoc);
 		}
 		if(extTypeJPG == true) {
 			extType = "jpg";
 			saveOpt = exportJPG(saveOpt);
-			alert("JPGで書き出します");
+			//alert("JPGで書き出します");
 			saveToFile(copyDoc);
 		}
 	copyDoc.activeHistoryState = copyDocHisObj;
 	return copyDoc.close(SaveOptions.DONOTSAVECHANGES);
+}
+
+//PNG24
+function exportPNG24(pngOpt) { 
+	pngOpt = new ExportOptionsSaveForWeb();
+	pngOpt.format = SaveDocumentType.PNG;
+	pngOpt.optimized = true;
+	pngOpt.interlaced = false;
+	pngOpt.PNG8 = false;
+	return pngOpt;
+}
+//JPG
+function exportJPG(jpgOpt) {
+	jpgOpt = new ExportOptionsSaveForWeb();
+	jpgOpt.format = SaveDocumentType.JPEG;
+	jpgOpt.includeProfile = false;
+	jpgOpt.interlaced = false;
+	jpgOpt.optimized = true;
+	jpgOpt.quality = 70;
+	jpgOpt.blur = 0;
+	jpgOpt.matteColor = new RGBColor();
+	jpgOpt.matteColor.red = 255;
+	jpgOpt.matteColor.green = 255;
+	jpgOpt.matteColor.blue = 255;
+	return jpgOpt;
+}
+//GIF
+function exportGIF() {
+	gifOpt = new ExportOptionsSaveForWeb();
+	gifOpt.format = SaveDocumentType.COMPUSERVEGIF;
+}
+
+//スナップショットを作成
+function takeSnapShot(doc) {
+	hisObj = app.activeDocument.activeHistoryState; //現在のスナップショット
+	}
+
+
+//スナップショットから戻る
+function revertToSnapshot(doc) {
+  app.activeDocument.activeHistoryState = hisObj;
+}
+//キャンバスサイズを取得
+function docInfo(){
+	w = activeDocument.width.value; //ドキュメントの横幅
+	h = activeDocument.height.value; //ドキュメンドの縦幅
+	res = activeDocument.resolution; //解像度
+}
+//ドキュメントの長辺を取得
+function docLongSide(){
+	if(w >= h){longSide = w; shortSide = h;}
+	 else if(h >= w) {longSide = h; shortSide = w;}
+	 else {
+		 alert("ドキュメントのサイズ情報が正しく取得できませんでした。")
+		 return false;
+	 }
+	 //alert("長辺は" + longSide +"pxと短辺は"+ shortSide + "px");
+}
+
+//長辺からリサイズの割合を割り出す
+function resizeFix(resizeLong){
+		resizeLong = longSideNum / longSide * 100;
+		return resizeLong;
+		}
+
+//ドキュメントの名前を取得して拡張子を削除
+function splitExt() {
+	fileName = activeDocument.name;
+	return fileName.split(/\.(?=[^.]+$)/);
+}
+
+function saveOption(){
+	takeSnapShot(doc);
+	tmpFileName = splitExt(fileName); //拡張子を抜き取る
+	folder = Folder.selectDialog("保存先フォルダの選択してください");
+}
+function saveToFile(doc){
+	saveFile = new File(folder.fsName + "/" + tmpFileName[0] + "." + extType); //ファイル名と保存場所の設定
+	doc.resizeImage(UnitValue(exportDoc, "percent"), UnitValue(exportDoc, "percent") , res , ResampleMethod.BICUBIC );
+	doc.exportDocument(saveFile, ExportType.SAVEFORWEB, saveOpt);
 }

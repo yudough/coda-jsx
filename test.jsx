@@ -1,4 +1,8 @@
-var doc, layObj;
+var doc;
 doc = activeDocument;
-layObj = doc.artLayers.add();
-doc.activeLayer.name = "うんちｗ";
+#include "lib/lib.jsx"
+docInfo();
+alert(w);
+var n = 300;
+resizeASP(4n);
+alert(doc.width.value);
