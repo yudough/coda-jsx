@@ -44,7 +44,7 @@ function exportGIF() {
 }
 
 //スナップショットを作成
-function takeSnapShot() {
+function takeSnapShot(doc) {
 	hisObj = app.activeDocument.activeHistoryState; //現在のスナップショット
 	}
 /*
@@ -71,8 +71,8 @@ function takeSnapShot() {
 
 
 //スナップショットから戻る
-function revertToSnapshot() {
-  doc.activeHistoryState = hisObj;
+function revertToSnapshot(doc) {
+  app.activeDocument.activeHistoryState = hisObj;
 }
 //キャンバスサイズを取得
 function docInfo(){
