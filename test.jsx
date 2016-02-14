@@ -53,3 +53,4 @@ activeDocument = doc;
 //スナップショットから戻る
 revertToSnapshot(doc);
 alert(decodeURIComponent(saveFile + "\nに書き出しました"));
+

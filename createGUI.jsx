@@ -27,7 +27,7 @@ doc = app.activeDocument;
 	//パネルの作成
 	saveGUI.btnPnl = saveGUI.add("panel",[10,10,402-10,226-10],"");
 	saveGUI.btnPnl = saveGUI.add("panel",[29,20,29+180,226-63],"サイズ設定");
-	saveGUI.btnPnl = saveGUI.add("panel",[402-180,20,402-30,226-63],"拡張子設定")
+	saveGUI.btnPnl = saveGUI.add("panel",[402-180,20,402-30,226-63],"拡張子設定");
 	//長辺のテキストボックス
 	saveGUI.sText = saveGUI.add("statictext",[40,60,40+90,60+20], "長辺のサイズ:");
 	saveGUI.longSide = saveGUI.add("edittext",[125,58,125+70,58+20],longSide);
@@ -75,30 +75,71 @@ doc = app.activeDocument;
 			alert("拡張子が選択されておりません。どれか一つ以上チェックを入れて下さい。");
 			return false;
 		}
-		
-		saveOption(doc); //書き出し先を指定
-		
-			//拡張子別に書き出し
-		if(extTypePNG == true) {
-			extType = "png";
-			saveOpt = exportPNG24();
-			//alert("PNGで書き出します");
-			saveToFile(doc);
 
-		}
-		if(extTypeJPG == true) {
-			extType = "jpg";
-			saveOpt = exportJPG();
-			//alert("JPGで書き出します");
-			saveToFile(doc);
-		}
+		tmpFileName = splitExt(fileName); //拡張子を抜き取る
+		folder = Folder.selectDialog("保存先フォルダの選択してください");
+		//スナップショットを作成
+		takeSnapShot(doc); //スナップショット
+		doc.mergeVisibleLayers(); //画像を統合する
+		copyDoc();
+		//先ほどのドキュメントをアクティブにする
+		activeDocument = doc;
 		alert(decodeURIComponent(folder.fsName + "\nの中に書き出しました"));
 		revertToSnapshot(doc);
 	//ダイアログボックスを閉じる
 		saveGUI.close();
-
 	}
 //キャンセル処理
 	saveGUI.cancelBtn.onClick = saveGUI.close();
 //ダイアログボックスを表示する
 	saveGUI.show();
+	
+	
+	
+	
+//-----------------------------------------------------------------------
+
+
+ //ドキュメントを複製して戻るまで
+function copyDoc(){
+	//ドキュメントを複製
+	var idMk = charIDToTypeID( "Mk  " );
+    var desc = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+        var ref = new ActionReference();
+        var idDcmn = charIDToTypeID( "Dcmn" );
+        ref.putClass( idDcmn );
+    desc.putReference( idnull, ref );
+    var idNm = charIDToTypeID( "Nm  " );
+    desc.putString( idNm, activeDocument.name.slice(0, -4) + '.copy.psd' );
+    var idUsng = charIDToTypeID( "Usng" );
+        var ref1 = new ActionReference();
+        var idLyr = charIDToTypeID( "Lyr " );
+        var idOrdn = charIDToTypeID( "Ordn" );
+        var idTrgt = charIDToTypeID( "Trgt" );
+        ref1.putEnumerated( idLyr, idOrdn, idTrgt );
+    desc.putReference( idUsng, ref1 );
+    var idVrsn = charIDToTypeID( "Vrsn" );
+    desc.putInteger( idVrsn, 5 );
+executeAction( idMk, desc, DialogModes.NO );
+
+	var copyDoc;
+	copyDoc = app.activeDocument;
+	var copyDocHisObj = copyDoc.activeHistoryState;
+	saveFile = new File(folder.fsName + "/" + tmpFileName[0] + "." + extType); //ファイル名と保存場所の設定
+		//拡張子別に書き出し
+		if(extTypePNG == true) {
+			extType = "png";
+			saveOpt = exportPNG24(saveOpt);
+			alert("PNGで書き出します");
+			saveToFile(copyDoc);
+		}
+		if(extTypeJPG == true) {
+			extType = "jpg";
+			saveOpt = exportJPG(saveOpt);
+			alert("JPGで書き出します");
+			saveToFile(copyDoc);
+		}
+	copyDoc.activeHistoryState = copyDocHisObj;
+	return copyDoc.close(SaveOptions.DONOTSAVECHANGES);
+}

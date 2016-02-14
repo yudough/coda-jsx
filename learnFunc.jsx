@@ -100,7 +100,7 @@ function extTypeCount() {}
 
 //ドキュメントの名前を取得して拡張子を削除
 function splitExt() {
-	fileName = activeDocument.name; 
+	fileName = activeDocument.name;
 	return fileName.split(/\.(?=[^.]+$)/);
 }
 //セーブオプション------------------------------------------//
@@ -119,9 +119,8 @@ function saveOption(){
 	takeSnapShot(doc);
 	tmpFileName = splitExt(fileName); //拡張子を抜き取る
 	folder = Folder.selectDialog("保存先フォルダの選択してください");
-	
 }
-function saveToFile(){
+function saveToFile(doc){
 	saveFile = new File(folder.fsName + "/" + tmpFileName[0] + "." + extType); //ファイル名と保存場所の設定
 	doc.resizeImage(UnitValue(exportDoc, "percent"), UnitValue(exportDoc, "percent") , res , ResampleMethod.BICUBIC );
 	doc.exportDocument(saveFile, ExportType.SAVEFORWEB, saveOpt);
