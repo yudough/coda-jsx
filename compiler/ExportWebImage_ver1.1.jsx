@@ -12,7 +12,7 @@
 
 preferences.rulerUnits = Units.PIXELS;// 単位を px に変更
 doc = app.activeDocument;
-var doc, saveFile, folder, fsName, tmpFileName, saveOpt,w, h, res, saveGUI, extType, extTypePNG, extTypeJPG, w, h, res, saveGUI, longSide, unitType, exportDoc, shortSide, longSideNum, exportLongSide,exportShortSide,resizeLong,resizeShort;
+var doc, docname, saveFile, folder, fsName, tmpFileName, saveOpt,w, h, res, saveGUI, extType, extTypePNG, extTypeJPG, w, h, res, saveGUI, longSide, unitType, exportDoc, shortSide, longSideNum, exportLongSide,exportShortSide,resizeLong,resizeShort;
 var fileName, pngOpt, jpgOpt, gifOpt, hisObj,layObj;
 doc = app.activeDocument;
 //ダイアログボックスを作成------------------------------------------//
@@ -22,25 +22,31 @@ doc = app.activeDocument;
 	saveGUI = new Window("dialog", "書き出しオプション", [0,100,402,100+226]);
 	//中央に配置
 	saveGUI.center(); 
+	//ドキュメント名を取得
+	docname = splitExt(fileName);
 	//ドキュメントの長辺を取得
 	docLongSide();
 	//パネルの作成
 	saveGUI.btnPnl = saveGUI.add("panel",[10,10,402-10,226-10],"");
-	saveGUI.btnPnl = saveGUI.add("panel",[29,20,29+180,226-63],"サイズ設定");
-	saveGUI.btnPnl = saveGUI.add("panel",[402-180,20,402-30,226-63],"拡張子設定");
+	saveGUI.btnPnl = saveGUI.add("panel",[29,80,29+180,226-63],"サイズ設定");
+	saveGUI.btnPnl = saveGUI.add("panel",[402-180,80,402-30,226-63],"拡張子設定");
+	//ファイル名の指定
+	saveGUI.btnPnl = saveGUI.add("panel", [29,20,402-29,55+20],"ファイル名");
+	saveGUI.addDocName = saveGUI.add("edittext", [29+10,40,402-39,40+20],docname[0]);
 	//長辺のテキストボックス
-	saveGUI.sText = saveGUI.add("statictext",[40,60,40+90,60+20], "長辺のサイズ:");
-	saveGUI.longSide = saveGUI.add("edittext",[125,58,125+70,58+20],longSide);
+	saveGUI.sText = saveGUI.add("statictext",[40,100,40+90,100+20], "長辺のサイズ:");
+	saveGUI.longSide = saveGUI.add("edittext",[125,100,125+70,100+20],longSide);
 	
 	//単位の指定
-	saveGUI.sText = saveGUI.add("statictext",[86,98+10,86+42,108+10], "単位:");
-	saveGUI.rBtn1 = saveGUI.add("radiobutton",[125,105,125+50,105+20], "px");
-	saveGUI.rBtn2 = saveGUI.add("radiobutton",[125,128,125+50,128+20], "%");
+	saveGUI.sText = saveGUI.add("statictext",[40,135,40+40,135+10], "単位:");
+	saveGUI.rBtn1 = saveGUI.add("radiobutton",[120,133,120+40,133+20], "px");
+	saveGUI.rBtn2 = saveGUI.add("radiobutton",[170,133,170+40,133+20], "%");
 	saveGUI.rBtn1.value = true; //初期値
 	//書き出すファイルの種類の指定
-	saveGUI.cBox1 = saveGUI.add("checkbox",[240,46,262+50,46+40], "PNG");
-	saveGUI.cBox2 = saveGUI.add("checkbox",[240,80,262+50,80+40], "JPG");
+	saveGUI.cBox1 = saveGUI.add("checkbox",[240,133,262+50,133+20], "PNG");
+	saveGUI.cBox2 = saveGUI.add("checkbox",[240,100,262+50,100+20], "JPG");
 	saveGUI.cBox1.value = true; //初期値
+	
 	//OKボタンの作成
 	saveGUI.okBtn = saveGUI.add("button",[242,170,242+100,170+35],"いいと思います",{name:"ok"}); 
 	//キャンセルボタン
@@ -75,8 +81,9 @@ doc = app.activeDocument;
 			alert("拡張子が選択されておりません。どれか一つ以上チェックを入れて下さい。");
 			return false;
 		}
-
-		tmpFileName = splitExt(fileName); //拡張子を抜き取る
+		
+			//入力されたファイル名を受け渡す
+		tmpFileName = saveGUI.addDocName.text;
 		folder = Folder.selectDialog("保存先フォルダの選択してください");
 		//スナップショットを作成
 		takeSnapShot(doc); //スナップショット
@@ -212,7 +219,7 @@ function resizeFix(resizeLong){
 //ドキュメントの名前を取得して拡張子を削除
 function splitExt() {
 	fileName = activeDocument.name;
-	return fileName.split(/\.(?=[^.]+$)/);
+	return fileName.split(/\.(?=[^.]+$)/);//splitで拡張子の文字を分割するので引き出したいときは[0]で指定すること！
 }
 
 function saveOption(){
@@ -221,7 +228,7 @@ function saveOption(){
 	folder = Folder.selectDialog("保存先フォルダの選択してください");
 }
 function saveToFile(doc){
-	saveFile = new File(folder.fsName + "/" + tmpFileName[0] + "." + extType); //ファイル名と保存場所の設定
+	saveFile = new File(folder.fsName + "/" + tmpFileName + "." + extType); //ファイル名と保存場所の設定
 	doc.resizeImage(UnitValue(exportDoc, "percent"), UnitValue(exportDoc, "percent") , res , ResampleMethod.BICUBIC );
 	doc.exportDocument(saveFile, ExportType.SAVEFORWEB, saveOpt);
 }
